@@ -25,3 +25,41 @@ Minimal VS Code Dev Container environment for building Android/Kotlin applicatio
    ```
 
 The application Gradle project itself is intentionally not included yet. Add it at the repository root in the next step and use the Gradle Wrapper (`./gradlew`) for builds.
+
+# Android Camera Sample — Step 1
+
+Android 9 (API 28) 以降で起動する、文字表示だけの最小Kotlin Androidアプリです。
+既存のdev containerを利用し、Android Studioは不要です。
+
+## 最初のビルド
+
+Dev Containerで開いたターミナルから実行します。
+
+```bash
+bash scripts/bootstrap-gradle-wrapper.sh
+./gradlew assembleDebug
+```
+
+初回スクリプトは公式のGradle 8.13を一時ダウンロードして、標準のGradle Wrapper (`gradlew` / `gradlew.bat` / `gradle/wrapper/*`) を生成します。**生成されたWrapperはGitにコミット**してください。次回以降、bootstrapは不要です。
+
+APK: `app/build/outputs/apk/debug/app-debug.apk`
+
+## 実機での確認
+
+USBデバッグを有効にしたAndroid端末を`adb devices`で確認します。Docker内からUSBデバイスが見えない構成なら、APKをMacまたはAndroid端末へ転送してインストールしてください。
+
+```bash
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+## バージョン
+
+- JDK 17 (dev container)
+- Android Gradle Plugin 8.13.2
+- Kotlin Android plugin 2.2.20
+- Gradle 8.13
+- compileSdk 36 / minSdk 28 / targetSdk 28
+
+`targetSdk=28`はAndroid 9端末で最初のビルド・起動を確認するための暫定設定です。配布前には現行のAndroid要件および新しいOSでの動作を見直してください。
+
+このサンプルはカメラ・マイク・ネットワーク通信・権限要求を含みません。
