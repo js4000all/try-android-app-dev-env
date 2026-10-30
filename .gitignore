@@ -1,3 +1,31 @@
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Android local machine settings
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+
+# VS Code local settings
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Native / external build outputs
+.externalNativeBuild/
+.cxx/
+
+# Signing material
+*.jks
+*.keystore
+keystore.properties
+
 # Compiled class file
 *.class
 

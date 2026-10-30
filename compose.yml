@@ -1,0 +1,11 @@
+services:
+  dev:
+    build:
+      context: ./.devcontainer
+      dockerfile: Dockerfile
+    init: true
+    volumes:
+      - .:/workspace:cached
+      - /srv/volumes/gradle-cache:/home/vscode/.gradle
+    working_dir: /workspace
+    command: sleep infinity
