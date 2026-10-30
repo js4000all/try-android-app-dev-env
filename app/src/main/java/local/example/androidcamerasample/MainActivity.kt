@@ -3,6 +3,8 @@ package local.example.androidcamerasample
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.util.Log
 import android.view.View
 import android.view.Gravity
@@ -41,9 +43,27 @@ class MainActivity : ComponentActivity() {
             gravity = Gravity.CENTER
             textSize = 18f
         }
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        val versionLabel = TextView(this).apply {
+            text = "v${packageInfo.versionName}  /  Take ${packageInfo.longVersionCode}"
+            textSize = 13f
+            setTextColor(Color.WHITE)
+            setPadding(12.dp, 7.dp, 12.dp, 7.dp)
+            background = GradientDrawable().apply {
+                setColor(0x99000000.toInt())
+                cornerRadius = 6.dp.toFloat()
+            }
+        }
         setContentView(FrameLayout(this).apply {
             addView(previewView, FrameLayout.LayoutParams(-1, -1))
             addView(statusView, FrameLayout.LayoutParams(-1, -1))
+            addView(versionLabel, FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.BOTTOM or Gravity.END
+            ).apply {
+                setMargins(12.dp, 12.dp, 12.dp, 12.dp)
+            })
         })
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
@@ -88,6 +108,9 @@ class MainActivity : ComponentActivity() {
         statusView.text = message
         statusView.visibility = android.view.View.VISIBLE
     }
+
+    private val Int.dp: Int
+        get() = (this * resources.displayMetrics.density + 0.5f).toInt()
 
     companion object {
         private const val TAG = "CameraSample"
