@@ -6,6 +6,7 @@ services:
     init: true
     volumes:
       - .:/workspace:cached
-      - /srv/volumes/gradle-cache:/home/vscode/.gradle
+      - /srv/volumes/try-android-app-dev-env/gradle-cache:/home/vscode/.gradle
+      - /srv/volumes/try-android-app-dev-env/android-user-data:/home/vscode/.android
     working_dir: /workspace
     command: sleep infinity
