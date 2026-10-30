@@ -11,7 +11,7 @@ android {
         applicationId = "local.example.androidcamerasample"
         minSdk = 28
         targetSdk = 28
-        versionCode = 2
+        versionCode = 3
         versionName = "0.1.0"
     }
 
