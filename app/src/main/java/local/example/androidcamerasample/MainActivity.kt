@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -12,8 +13,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.lifecycle.awaitInstance
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private lateinit var previewView: PreviewView
@@ -52,27 +57,31 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun startCamera() {
-        showStatus("Starting camera...")
-        val providerFuture = ProcessCameraProvider.getInstance(this)
-        providerFuture.addListener({
+        lifecycleScope.launch {
+            showStatus("Starting camera...")
             try {
-                val provider = providerFuture.get()
+                val provider = ProcessCameraProvider.awaitInstance(this@MainActivity)
                 val selector = CameraSelector.DEFAULT_BACK_CAMERA
+
                 if (!provider.hasCamera(selector)) {
                     showStatus("Back camera not available")
-                    return@addListener
+                    return@launch
                 }
+
                 val preview = Preview.Builder().build().also {
                     it.surfaceProvider = previewView.surfaceProvider
                 }
+
                 provider.unbindAll()
-                provider.bindToLifecycle(this, selector, preview)
-                statusView.visibility = android.view.View.GONE
+                provider.bindToLifecycle(this@MainActivity, selector, preview)
+                statusView.visibility = View.GONE
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to start camera", e)
                 showStatus("Failed to start camera: ${e.javaClass.simpleName}")
             }
-        }, ContextCompat.getMainExecutor(this))
+        }
     }
 
     private fun showStatus(message: String) {
