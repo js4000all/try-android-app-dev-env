@@ -63,3 +63,24 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 `targetSdk=28`はAndroid 9端末で最初のビルド・起動を確認するための暫定設定です。配布前には現行のAndroid要件および新しいOSでの動作を見直してください。
 
 このサンプルはカメラ・マイク・ネットワーク通信・権限要求を含みません。
+
+## ADB経由でAPKをインストール
+
+事前に、[LAN経由でのADB接続を確立](docs/adb-setup.md)しておく。
+これにより、Dev Containerホストにタブレットを直結しなくても良く、開発PCの前で作業できる。
+
+```bash
+# APKをビルド
+./gradlew assembleDebug
+
+# ADB接続を確認
+adb devices -l
+
+# APKをインストール
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+事前に消す場合。
+```bash
+adb uninstall local.example.androidcamerasample
+```
